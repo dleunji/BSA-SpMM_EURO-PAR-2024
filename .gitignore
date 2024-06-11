@@ -1,0 +1,9 @@
+bin/
+bsa_spmm_benchmark
+reordering_benchmark
+obj_spmm_*
+.vscode
+dlmc/
+dlmc_mtx/
+result/*
+.venv/

@@ -1,0 +1,2 @@
+./programs/cuda/cuda_multiply -a 5 -b 32 -B 32 -f ../../dlmc/rn50/extended_magnitude_pruning/0.8/bottleneck_1_block_group_projection_block_group1.smtx -F 1 -g 1 -p 1 -P 1 -m 1 -M 4 -c 128 -x 10 -r 0 -t 0.3
+./programs/cuda/cuda_multiply -a 5 -b 32 -B 32 -f ../../dlmc/transformer/variational_dropout/0.9/body_decoder_layer_4_ffn_conv1.smtx -F 1 -g 1 -p 1 -P 1 -m 1 -M 4 -c 128 -x 10 -r 0 -t 0.3
