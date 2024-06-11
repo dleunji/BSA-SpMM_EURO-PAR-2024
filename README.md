@@ -9,10 +9,13 @@
 
 ## Step 1. Setup and Download
 ### Setup the environmental variable
-Change the value of `CUDA_PATH` to the path where nvcc is installed and `CUDA_ARCH` according to your computer following the [specification](https://arnon.dk/matching-sm-architectures-arch-and-gencode-for-various-nvidia-cards/) env.sh file.
+Change some variables, `CUDA_PATH` and `CUDA_ARCH`, in the env.sh file.
+`CUDA_PATH` denotes the path where nvcc is installed.
+And change `CUDA_ARCH` according to your computer following the [specification](https://arnon.dk/matching-sm-architectures-arch-and-gencode-for-various-nvidia-cards/)
 Other environmental variables will be setup automatically.
 
-```
+For example,
+```bash
 export CUDA_PATH=/usr/local/cuda-12.1
 export CUDA_ARCH=86
 ```
@@ -22,7 +25,6 @@ And then, execute the env.sh file with `source` command to export the environmen
 ```bash
 source env.sh
 ```
-
 
 ### Install one of the baselines, Sputnik
 ```bash
