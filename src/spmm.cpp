@@ -25,8 +25,6 @@ int _spmm_bellpack(intT A_rows, intT A_cols, intT block_size, intT A_ell_rows, i
     float alpha = 1.0f;
     float beta = 1.0f;
 
-    // printf("here??11111111111111\n");
-
     checkCudaErrors(cudaMalloc((void **)&dA_ellColInd, A_ell_rows * A_ell_cols * sizeof(intT)));
     checkCudaErrors(cudaMalloc((void **)&dA_ellValues, block_size * block_size * num_blocks * sizeof(DataT_H)));
 
@@ -37,28 +35,6 @@ int _spmm_bellpack(intT A_rows, intT A_cols, intT block_size, intT A_ell_rows, i
     checkCudaErrors(cudaMalloc((void **)&d_C, size_C * sizeof(DataT_C)));
 
     checkCudaErrors(cudaMemcpy(d_C, C, size_C * sizeof(DataT), cudaMemcpyHostToDevice));
-    // printf("A_ell_rows: %d A_ell_cols: %d\n", A_ell_rows, A_ell_cols);
-    // for (int i = 0; i < A_ell_rows * A_ell_cols; i++)
-    // {
-    //     printf("%d ", A_ellColInd[i]);
-    // }
-    // printf("\n");
-    // printf("sssss\n");
-    // for (int i = 0; i < A_ell_rows; i++)
-    // {
-    //     for (int j = 0; j < A_ell_cols; j++)
-    //     {
-    //         for (int bi = 0; bi < block_size; bi++)
-    //         {
-    //             // printf("block starting\n");
-    //             for (int bj = 0; bj < block_size; bj++)
-    //             {
-    //                 printf("%f ", __half2float(A_ellValues[(i * A_ell_cols + j) * (block_size * block_size) + (bi * block_size + bj)]));
-    //             }
-    //             printf("\n");
-    //         }
-    //     }
-    // }
 
     checkCudaErrors(cudaMemcpy(dA_ellColInd, A_ellColInd, A_ell_rows * A_ell_cols * sizeof(intT), cudaMemcpyHostToDevice));
     checkCudaErrors(cudaMemcpy(dA_ellValues, A_ellValues, block_size * block_size * num_blocks * sizeof(DataT_H), cudaMemcpyHostToDevice));
@@ -68,8 +44,6 @@ int _spmm_bellpack(intT A_rows, intT A_cols, intT block_size, intT A_ell_rows, i
     cusparseHandle_t handle;
     cusparseSpMatDescr_t matA;
     cusparseDnMatDescr_t matB, matC;
-
-    // printf("here??22222222\n");
 
     checkCudaErrors(cusparseCreate(&handle));
     checkCudaErrors(cusparseCreateBlockedEll(
@@ -84,7 +58,7 @@ int _spmm_bellpack(intT A_rows, intT A_cols, intT block_size, intT A_ell_rows, i
 
     size_t bufferSize = 0;
     void *dBuffer = NULL;
-    // printf("here??333333333\n");
+
     checkCudaErrors(cusparseSpMM_bufferSize(
         handle,
         CUSPARSE_OPERATION_NON_TRANSPOSE,
@@ -98,7 +72,6 @@ int _spmm_bellpack(intT A_rows, intT A_cols, intT block_size, intT A_ell_rows, i
     checkCudaErrors(cudaEventCreate(&start));
     checkCudaErrors(cudaEventCreate(&stop));
     checkCudaErrors(cudaEventRecord(start, 0));
-    // printf("here??3.53.5.\n");
 
     checkCudaErrors(cusparseSpMM(
         handle,
@@ -106,39 +79,19 @@ int _spmm_bellpack(intT A_rows, intT A_cols, intT block_size, intT A_ell_rows, i
         CUSPARSE_OPERATION_NON_TRANSPOSE,
         &alpha, matA, matB, &beta, matC, compute_type,
         CUSPARSE_SPMM_BLOCKED_ELL_ALG1, dBuffer));
-    // printf("here??3.53.5.\n");
+
     cudaDeviceSynchronize();
     cudaEventRecord(stop, 0);
     cudaEventSynchronize(stop);
     cudaEventElapsedTime(&elapsed_time, start, stop);
     cudaEventDestroy(start);
     cudaEventDestroy(stop);
-    // printf("here??444444444444\n");
 
     checkCudaErrors(cusparseDestroySpMat(matA));
     checkCudaErrors(cusparseDestroyDnMat(matB));
     checkCudaErrors(cusparseDestroyDnMat(matC));
 
     checkCudaErrors(cudaMemcpy(C, d_C, size_C * sizeof(DataT_C), cudaMemcpyDeviceToHost));
-    // printf("c_rows: %d c_cols: %d\n", C_rows, C_cols);
-
-    // for (int i = 0; i < B_rows; i++)
-    // {
-    //     for (int j = 0; j < B_cols; j++)
-    //     {
-    //         printf("%.0f ", __half2float(B[i * C_cols + j]));
-    //     }
-    //     printf("\n");
-    // }
-    // printf("\n");
-    // for (int i = 0; i < C_rows; i++)
-    // {
-    //     for (int j = 0; j < C_cols; j++)
-    //     {
-    //         printf("%.0f ", C[i * C_cols + j]);
-    //     }
-    //     printf("\n");
-    // }
 
     checkCudaErrors(cudaFree(dBuffer));
     checkCudaErrors(cudaFree(d_B));
@@ -182,8 +135,6 @@ void spmm_bellpack(BSA_HYBRID &bsa_lhs, ARR &rhs, DataT_C *matC, float &elapsed_
         intT *new_ellColInd = bsa_lhs.ellColInd + (starting_row_panel * bsa_lhs.ell_cols);
         DataT *new_result_mat = matC + (starting_row_panel * block_size) * C_cols;
         DataT_H *new_ellValues = bsa_lhs.h_ellValues + (starting_row_panel * bsa_lhs.ell_cols * block_size * block_size);
-        // _spmm_bellpack(bsa_lhs.rows, bsa_lhs.cols, bsa_lhs.block_size, bsa_lhs.ell_rows, bsa_lhs.ell_cols, bsa_lhs.ellColInd, bsa_lhs.h_ellValues, rhs.h_mat, rhs.cols, result_mat.mat, elapsed_time);
-        // printf("elapsed: %f\n", elapsed_time);
         _spmm_bellpack(new_lhs_rows, bsa_lhs.cols, bsa_lhs.block_size, new_ell_rows, bsa_lhs.ell_cols, new_ellColInd, new_ellValues, rhs.h_mat, rhs.cols, new_result_mat, elapsed_time);
     }
     else
@@ -223,25 +174,6 @@ int _spmm_csr(intT A_rows, intT A_cols, intT csr_total_nonzeros, intT *rowptr, i
 
     DataT *d_B;
     DataT_C *d_C;
-    // printf("rowptr\n");
-    // for (int i = 0; i < A_rows + 1; i++)
-    // {
-    //     printf("%d ", rowptr[i]);
-    // }
-    // printf("\n");
-
-    // printf("colidx\n");
-    // for (int i = 0; i < csr_total_nonzeros; i++)
-    // {
-    //     printf("%d ", colidx[i]);
-    // }
-    // printf("\n");
-    // printf("values\n");
-    // for (int i = 0; i < csr_total_nonzeros; i++)
-    // {
-    //     printf("%f ", values[i]);
-    // }
-    // printf("\n");
 
     checkCudaErrors(cudaMalloc((void **)&d_B, size_B * sizeof(DataT)));
     checkCudaErrors(cudaMalloc((void **)&d_C, size_C * sizeof(DataT)));
@@ -307,20 +239,6 @@ int _spmm_csr(intT A_rows, intT A_cols, intT csr_total_nonzeros, intT *rowptr, i
 
     checkCudaErrors(cusparseDestroy(handle));
     checkCudaErrors(cudaMemcpy(C, d_C, size_C * sizeof(DataT_C), cudaMemcpyDeviceToHost));
-    // for (int i = 0; i < size_B; i++)
-    // {
-    //     printf("%0.2f ", B[i]);
-    // }
-    // printf("\n");
-    // printf("b_rows %d b_cols: %d\n", B_rows, B_cols);
-    // printf("c_rows %d C_cols: %d\n", C_rows, C_cols);
-    // for (int i = 0; i < C_rows; i++)
-    // {
-    //     for (int j = 0; j < C_cols; j++)
-    //         printf("%0.2f ", C[i * C_cols + j]);
-    //     printf("\n");
-    // }
-    // printf("\n");
 
     checkCudaErrors(cudaFree(d_B));
     checkCudaErrors(cudaFree(d_C));

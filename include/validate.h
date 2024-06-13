@@ -19,7 +19,6 @@ bool validate_spmm(CSR &lhs, ARR &rhs, ARR &result_mat, Major b_major, Major c_m
             {
                 int b_idx = b_major == row ? lhs.colidx[j] * rhs.cols + k : k * rhs.rows + lhs.colidx[j];
                 int c_idx = c_major == row ? r * result_mat.cols + k : k * result_mat.rows + r;
-                // printf("b_idx: %d c_idx: %d rhs.rows %d lhs.colidx :%d\n", b_idx, c_idx, rhs.rows, lhs.colidx[j]);
                 valid_matC[c_idx] += val * rhs.mat[b_idx];
             }
         }

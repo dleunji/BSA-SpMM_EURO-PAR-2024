@@ -38,10 +38,10 @@ $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cu include/%.cuh
 
 ###############################################################################
 
-bsa_spmm_benchmark: $(OBJ_DIR)/reordering_benchmark.o $(OBJ_DIR)/bsa_spmm.o $(OBJ_DIR)/matrices.o $(OBJ_DIR)/reorder.o $(OBJ_DIR)/similarity.o $(OBJ_DIR)/logger.o $(OBJ_DIR)/reorder_gpu.o $(OBJ_DIR)/spmm.o
+bsa_spmm_benchmark: $(OBJ_DIR)/reordering_benchmark.o $(OBJ_DIR)/matrices.o $(OBJ_DIR)/reorder.o $(OBJ_DIR)/similarity.o $(OBJ_DIR)/logger.o $(OBJ_DIR)/reorder_gpu.o $(OBJ_DIR)/spmm.o
 	$(NVCC) $(CUDA_CXXFLAGS) $(CUDA_INCLUDE) $(CUDA_LDFLAGS) $(CUDA_CXXFLAGS) $^ -o $@
 
-reordering_benchmark: $(OBJ_DIR)/reordering_benchmark.o $(OBJ_DIR)/bsa_spmm.o $(OBJ_DIR)/matrices.o $(OBJ_DIR)/reorder.o $(OBJ_DIR)/similarity.o $(OBJ_DIR)/logger.o $(OBJ_DIR)/reorder_gpu.o $(OBJ_DIR)/spmm.o
+reordering_benchmark: $(OBJ_DIR)/reordering_benchmark.o $(OBJ_DIR)/matrices.o $(OBJ_DIR)/reorder.o $(OBJ_DIR)/similarity.o $(OBJ_DIR)/logger.o $(OBJ_DIR)/reorder_gpu.o $(OBJ_DIR)/spmm.o
 	$(NVCC) $(CUDA_CXXFLAGS) $(CUDA_INCLUDE) $(CUDA_LDFLAGS) $(CUDA_CXXFLAGS) $^ -o $@
 
 clean:
