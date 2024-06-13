@@ -9,12 +9,11 @@
 
 ## Step 1. Setup and Download
 ### Setup the environmental variable
-Change some variables, `CUDA_PATH` and `CUDA_ARCH`, in the env.sh file.
+Change some variables, `CUDA_PATH` and `CUDA_ARCH`, in the env.sh file according to your computer.
 `CUDA_PATH` denotes the path where nvcc is installed.
-And change `CUDA_ARCH` according to your computer following the [specification](https://arnon.dk/matching-sm-architectures-arch-and-gencode-for-various-nvidia-cards/)
+And change `CUDA_ARCH` following the [specification](https://arnon.dk/matching-sm-architectures-arch-and-gencode-for-various-nvidia-cards/).
 Other environmental variables will be setup automatically.
 
-For example,
 ```bash
 export CUDA_PATH=/usr/local/cuda-12.1
 export CUDA_ARCH=86
@@ -53,7 +52,7 @@ bash build.sh
 ```
 
 ### To reproduce the figure 4
-Benchmarking all algorithms in Figure 4 on the large DLMC dataset takes more than 4 hours.
+Benchmarking all algorithms in Figure 4 on the large DLMC dataset takes more than 5 hours.
 The paper includes ASpT-RR as a benchmark baseline in figure 4, but as it is not currently open-source, we are unable to provide it.
 Therefore, we ask for your understanding that it is not included in the released artifact.
 

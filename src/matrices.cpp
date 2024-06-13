@@ -143,16 +143,11 @@ void CSR::read_from_smtx(std::ifstream &fin, Option option, bool zero_base)
             rowptr[i] = offset;
         }
     }
-    // printf("total nonzeros %d\n", total_nonzeros);
-    // printf("column reading\n");
     int c;
     idx = 0;
     offset = 0;
-    // colidx = new intT *[rows];
-    // original_ja_contiguous = new intT[total_nonzeros];
     if (not pattern_only)
     {
-        // ma = new DataT *[rows];
         for (int i = 0; i < total_nonzeros; i++)
         {
             values[i] = 1;
